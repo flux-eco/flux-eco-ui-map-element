@@ -7,7 +7,7 @@ parentElement.style.width = "600px";
 parentElement.style.height = "600px";
 document.body.appendChild(parentElement);
 
-const jsonComponent = await fetch("component.json");
+const jsonComponent = await fetch("config.json");
 const component = await jsonComponent.json();
 console.log(component.configs);
 const configs = await component.configs;
