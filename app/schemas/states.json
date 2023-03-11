@@ -1,0 +1,154 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://flux-eco.fluxlabs.ch/components/flux-eco-ui-map-element/schemas/states.json",
+  "$defs": {
+    "MapElementLayerState": {
+      "type": "object",
+      "properties": {
+        "layerUrl": {
+          "type": "string",
+          "default": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        },
+        "layerOptions": {
+          "type": "object",
+          "properties": {
+            "attribution": {
+              "type": "string",
+              "default": "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"
+            }
+          },
+          "default": {
+            "attribution": "&copy; <a href=\"https://www.openstreetmap.org\">OpenStreetMap</a> contributors"
+          }
+        }
+      }
+    },
+    "MapElementViewState": {
+      "type": "object",
+      "properties": {
+        "center": {
+          "$ref": "#/$defs/LatLng"
+        },
+        "zoom": {
+          "type": "number",
+          "default": 13
+        },
+        "options": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "center",
+        "zoom"
+      ],
+      "additionalProperties": false
+    },
+    "MapElementMarkerState": {
+      "type": "object",
+      "properties": {
+        "geoLocationLink": {
+          "$ref": "https://flux-eco.fluxlabs.ch/components/flux-eco-ui-link-elements/schemas/states.json/#$defs/geoLocationLinkElementState"
+        },
+        "radius": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "link",
+        "radius"
+      ],
+      "additionalProperties": false
+    },
+    "MapElementState": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "link": {
+          "type": "object",
+          "properties": {
+            "href": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "href",
+            "text"
+          ],
+          "additionalProperties": false
+        },
+        "mapElementViewState": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/MapElementViewState"
+          }
+        },
+        "mapElementLayerStates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/MapElementLayerState"
+          }
+        },
+        "mapElementMarkerStates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/MapElementMarkerState"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "link",
+        "mapElementViewState",
+        "mapElementLayerStates",
+        "mapElementMarkerStates"
+      ],
+      "additionalProperties": false
+    },
+    "LatLng": {
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "number",
+          "default": 34.238972
+        },
+        "lng": {
+          "type": "number",
+          "default": -118.433449
+        }
+      }
+    },
+    "type": "object",
+    "properties": {
+      "mapElementViewState": {
+        "$ref": "#/$defs/MapElementViewState"
+      },
+      "mapElementLayerStates": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/MapElementLayerState"
+        },
+        "default": []
+      },
+      "mapElementMarkerState": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/MapElementMarkerState"
+        },
+        "default": []
+      }
+    },
+    "required": [
+      "mapElementViewState",
+      "mapElementLayerStates",
+      "mapElementMarkerState"
+    ],
+    "additionalProperties": false
+  }
+}

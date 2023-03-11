@@ -29,16 +29,16 @@ async function app() {
                     "/**/*.map": {
                         "contentType": "application/javascript"
                     },
-                    "/component.json": {
+                    "/config.json": {
                         "contentType": "application/json"
                     },
                 },
-                "/src": {
+                "/public/flux-eco-ui-map-element/src": {
                     "/**/*.mjs": {
                         "contentType": "application/javascript"
                     },
                 },
-                "/definitions": {
+                "/public/flux-eco-ui-map-element/definitions": {
                     "/types.mjs": {
                         "contentType": "application/javascript"
                     },
@@ -46,7 +46,7 @@ async function app() {
                         "contentType": "text/css"
                     },
                 },
-                "/libs": {
+                "/public/flux-eco-ui-map-element/libs": {
                     "/**/*.js": {
                         "contentType": "application/javascript"
                     },

@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://flux-eco.fluxlabs.ch/components/flux-eco-ui-map-element/schemas/settings.json",
+  "type": "object",
+  "properties": {
+    "mapElementCssLinkState": {
+      "type": "object",
+      "properties": {
+        "rel": {
+          "type": "string",
+          "default": "stylesheet"
+        },
+        "href": {
+          "type": "string",
+          "default": "/definitions/flux-eco-ui-map-element.css"
+        }
+      },
+      "required": [
+        "rel",
+        "href"
+      ]
+    }
+  },
+  "mapContainerDimensions": {
+    "type": "object",
+    "properties": {
+      "height": {
+        "type": "string",
+        "default": "800px"
+      },
+      "width": {
+        "type": "string",
+        "default": "800px"
+      }
+    },
+    "default": {
+      "height": "800px",
+      "width": "800px"
+    },
+    "required": [
+      "height",
+      "width"
+    ]
+  },
+  "required": [
+    "mapElementCssLinkState"
+  ]
+}

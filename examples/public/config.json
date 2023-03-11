@@ -1,10 +1,10 @@
 {
-  "$schema": "../schemas/component.json",
+  "$schema": "flux-eco-ui-map-element/schemas/component.json",
   "name": "example-ui-map",
   "configs": {
     "settings": {
       "mapElementCssLinkState": {
-        "href": "/definitions/flux-eco-ui-map-element.css",
+        "href": "flux-eco-ui-map-element/definitions/flux-eco-ui-map-element.css",
         "rel": "stylesheet"
       },
       "mapContainerDimensions": {

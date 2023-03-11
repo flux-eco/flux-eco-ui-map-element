@@ -1,5 +1,5 @@
-import {FluxEcoUiMapElement} from "./../src/FluxEcoUiMapElement.mjs";
-import "./../definitions/types.mjs";
+import {FluxEcoUiMapElement} from "./flux-eco-ui-map-element/src/FluxEcoUiMapElement.mjs";
+import "./flux-eco-ui-map-element/definitions/types.mjs";
 
 
 const parentElement = document.createElement("div");
