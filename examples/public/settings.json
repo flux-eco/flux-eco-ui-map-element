@@ -1,0 +1,7 @@
+{
+  "$schema": "./flux-eco-ui-map-element/schemas/settings.json",
+  "mapContainerDimensions": {
+    "width": "800px",
+    "height": "800px"
+  }
+}

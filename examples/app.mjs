@@ -29,7 +29,7 @@ async function app() {
                     "/**/*.map": {
                         "contentType": "application/javascript"
                     },
-                    "/config.json": {
+                    "/settings.json": {
                         "contentType": "application/json"
                     },
                 },
@@ -42,6 +42,11 @@ async function app() {
                     "/types.mjs": {
                         "contentType": "application/javascript"
                     },
+                    "/**/*.css": {
+                        "contentType": "text/css"
+                    },
+                },
+                "/public/flux-eco-ui-map-element/assets": {
                     "/**/*.css": {
                         "contentType": "text/css"
                     },

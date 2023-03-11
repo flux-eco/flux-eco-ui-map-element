@@ -1,8 +1,10 @@
 */
 !LICENSE
 !README.md
-!src
-!schemas
-!definitions
+!app
+!app/assets
+!app/configs
+!app/schemas
+!app/types
 !examples
 !examples/public
