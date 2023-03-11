@@ -1,7 +1,7 @@
 /**
  * FluxEcoUiMapElement configs.
- * @typedef {Object} FluxEcoUiMapElement.Configs
- * @property {FluxEcoUiMapElement.Settings} settings
- * @property {FluxEcoUiMapElement.Outbounds} outbounds
- * @property {FluxEcoUiMapElement.State|null} initialState
+ * @typedef {Object} FluxEcoUiMapElementConfigs
+ * @property {FluxEcoUiMapElementSettings} settings
+ * @property {FluxEcoUiMapElementOutbounds} outbounds
+ * @property {FluxEcoUiMapElementState|null} initialState
  */

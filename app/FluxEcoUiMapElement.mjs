@@ -6,11 +6,11 @@ export class FluxEcoUiMapElement extends HTMLElement {
      */
     #id;
     /**
-     * @type {FluxEcoUiMapElement.State|null}
+     * @type {FluxEcoUiMapElementState|null}
      */
     #state = null;
     /**
-     * @type {FluxEcoUiMapElement.Settings}
+     * @type {FluxEcoUiMapElementSettings}
      */
     #settings;
     /**
@@ -22,10 +22,26 @@ export class FluxEcoUiMapElement extends HTMLElement {
      */
     #shadow;
 
+    static get AttributeName() {
+        return {
+            MapView: 'map-view',
+            MapMarkers: 'map-markers',
+            MapLayers: 'map-layers',
+        };
+    }
+
+    static get AttributeNames() {
+        return Object.values(this.AttributeName);
+    }
+
+    static get observedAttributes() {
+        return this.AttributeNames;
+    }
+
 
     /**
      * @param {string} id
-     * @param {FluxEcoUiMapElement.Configs} configs
+     * @param {FluxEcoUiMapElementConfigs} configs
      */
     constructor(id, configs) {
         super();
@@ -47,7 +63,7 @@ export class FluxEcoUiMapElement extends HTMLElement {
 
     /**
      * @param {string} id
-     * @param {FluxEcoUiMapElement.Configs} configs
+     * @param {FluxEcoUiMapElementConfigs} configs
      * @returns {FluxEcoUiMapElement}
      */
     static new(id, configs) {
@@ -56,27 +72,83 @@ export class FluxEcoUiMapElement extends HTMLElement {
 
     connectedCallback() {
         if (this.#state) {
-            const mapContainerElement = this.#createMapContainerElement(this.#settings.mapContainerDimensions);
-            this.#contentContainer.appendChild(mapContainerElement);
-            this.#renderMap(mapContainerElement, this.#state);
+            this.#applyStateChanged(this.#state)
+        }
+    }
+
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        switch (name) {
+            case FluxEcoUiMapElement.AttributeName.MapView:
+                this.changeMapView(JSON.parse(newValue));
+                break;
+            case FluxEcoUiMapElement.AttributeName.MapLayers:
+                this.changeMapLayers(JSON.parse(newValue));
+                break;
+            case FluxEcoUiMapElement.AttributeName.MapMarkers:
+                this.changeMapMarkers(JSON.parse(newValue));
+                break;
+            default:
+                break;
         }
     }
 
     /**
-     * @param {FluxEcoUiMapElement.State} elementState
+     * @param {FluxEcoUiMapElementState} newState
      * @return {void}
      */
-    changeState(elementState) {
+    changeState(newState) {
+        this.#applyStateChanged(newState)
+    }
+
+    /**
+     * @param {MapElementViewState} newMapViewState
+     * @return {void}
+     */
+    changeMapView(newMapViewState) {
+        if (this.#state) {
+            const newState = this.#state
+            newState.mapView = newMapViewState;
+            this.#applyStateChanged(newState)
+        }
+    }
+
+    /**
+     * @param {MapElementLayerState[]} newMapLayersState
+     * @return {void}
+     */
+    changeMapLayers(newMapLayersState) {
+        if (this.#state) {
+            const newState = this.#state
+            newState.mapLayers = newMapLayersState;
+            this.#applyStateChanged(newState)
+        }
+    }
+
+    /**
+     * @param {MapElementMarkerState[]} newMapMarkersState
+     * @return {void}
+     */
+    changeMapMarkers(newMapMarkersState) {
+        if (this.#state) {
+            const newState = this.#state
+            newState.mapMarkers = newMapMarkersState;
+            this.#applyStateChanged(newState)
+        }
+    }
+
+    #applyStateChanged(newState) {
         const mapContainerElement = this.#createMapContainerElement(this.#settings.mapContainerDimensions);
         this.#contentContainer.innerHTML = "";
         this.#contentContainer.appendChild(mapContainerElement);
-        this.#renderMap(mapContainerElement, elementState);
+        this.#renderMap(mapContainerElement, newState);
+        this.#state = newState;
     }
 
 
     /**
      * @param {HTMLElement} mapContainer
-     * @param {FluxEcoUiMapElement.State} elementState
+     * @param {FluxEcoUiMapElementState} elementState
      */
     #renderMap(mapContainer, elementState) {
         const {mapView, mapLayers, mapMarkers} = elementState
@@ -94,7 +166,7 @@ export class FluxEcoUiMapElement extends HTMLElement {
     /**
      *
      * @param parentMapElement
-     * @param {FluxEcoUiMapElement.State.MapView} mapView
+     * @param {MapElementViewState} mapView
      */
     #renderMapView(parentMapElement, mapView) {
         parentMapElement.setView([mapView.center.lat, mapView.center.lng], mapView.zoom);
@@ -103,7 +175,7 @@ export class FluxEcoUiMapElement extends HTMLElement {
 
     /**
      * @param parentMapElement
-     * @param {FluxEcoUiMapElement.State.MapLayer[]} mapLayers
+     * @param {MapElementMarkerState[]} mapLayers
      */
     #renderMapLayers(parentMapElement, mapLayers) {
         mapLayers.forEach((mapLayer) => {
@@ -114,7 +186,7 @@ export class FluxEcoUiMapElement extends HTMLElement {
     /**
      *
      * @param parentMapElement
-     * @param {FluxEcoUiMapElement.State.MapLayer} mapLayer
+     * @param {MapElementLayerState} mapLayer
      */
     #renderMapLayer(parentMapElement, mapLayer) {
         L.tileLayer(mapLayer.layerUrl, mapLayer.layerOptions).addTo(parentMapElement)
@@ -123,7 +195,7 @@ export class FluxEcoUiMapElement extends HTMLElement {
     /**
      *
      * @param parentMapElement
-     * @param {FluxEcoUiMapElement.State.MapMarker[]} mapMarkers
+     * @param {MapElementMarkerState[]} mapMarkers
      */
     #renderMapMarkers(parentMapElement, mapMarkers) {
         mapMarkers.forEach((mapMarker) => {
@@ -134,7 +206,7 @@ export class FluxEcoUiMapElement extends HTMLElement {
     /**
      *
      * @param parentMapElement
-     * @param {FluxEcoUiMapElement.State.MapMarker} mapMarker
+     * @param {MapElementMarkerState} mapMarker
      */
     #renderMapMarker(parentMapElement, mapMarker) {
         L.marker([mapMarker.lat, mapMarker.lng]).addTo(parentMapElement)

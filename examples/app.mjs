@@ -33,7 +33,7 @@ async function app() {
                         "contentType": "application/json"
                     },
                 },
-                "/public/flux-eco-ui-map-element/src": {
+                "/public/flux-eco-ui-map-element": {
                     "/**/*.mjs": {
                         "contentType": "application/javascript"
                     },

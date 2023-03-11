@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://flux-eco.fluxlabs.ch/components/flux-eco-ui-map-element/schemas/states.json",
+  "$id": "https://flux-eco.fluxlabs.ch/components/flux-eco-ui-map-element/schemas/state.json",
   "$defs": {
     "MapElementLayerState": {
       "type": "object",
@@ -60,33 +60,11 @@
       ],
       "additionalProperties": false
     },
-    "MapElementState": {
+    "FluxEcoUiMapElementState": {
       "type": "object",
       "properties": {
-        "title": {
-          "type": "string"
-        },
-        "link": {
-          "type": "object",
-          "properties": {
-            "href": {
-              "type": "string"
-            },
-            "text": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "href",
-            "text"
-          ],
-          "additionalProperties": false
-        },
         "mapElementViewState": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/MapElementViewState"
-          }
+          "$ref": "#/$defs/MapElementViewState"
         },
         "mapElementLayerStates": {
           "type": "array",
@@ -102,9 +80,6 @@
         }
       },
       "required": [
-        "id",
-        "title",
-        "link",
         "mapElementViewState",
         "mapElementLayerStates",
         "mapElementMarkerStates"
