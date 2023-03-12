@@ -4,6 +4,25 @@
   "type": "object",
   "properties": {
     "mapContainerDimensions": {
+      "$ref": "#/$defs/MapContainerDimensions",
+      "required": [ "height", "width"]
+    },
+    "mapElementLayers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/MapElementLayer",
+        "required": [
+          "layerUrl",
+          "layerOptions"
+        ]
+      }
+    }
+  },
+  "required": [
+    "mapContainerDimensions", "mapElementLayers"
+  ],
+  "$defs": {
+    "MapContainerDimensions": {
       "type": "object",
       "properties": {
         "height": {
@@ -23,9 +42,31 @@
         "height",
         "width"
       ]
+    },
+    "MapElementLayer": {
+      "type": "object",
+      "properties": {
+        "layerUrl": {
+          "type": "string",
+          "default": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        },
+        "layerOptions": {
+          "type": "object",
+          "properties": {
+            "attribution": {
+              "type": "string",
+              "default": "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"
+            }
+          },
+          "default": {
+            "attribution": "&copy; <a href=\"https://www.openstreetmap.org\">OpenStreetMap</a> contributors"
+          }
+        }
+      },
+      "required": [
+        "layerUrl",
+        "layerOptions"
+      ]
     }
-  },
-  "required": [
-    "mapContainerDimensions"
-  ]
+  }
 }

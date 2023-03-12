@@ -1,29 +1,26 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://flux-eco.fluxlabs.ch/components/flux-eco-ui-map-element/schemas/state.json",
-  "$defs": {
-    "MapElementLayerState": {
-      "type": "object",
-      "properties": {
-        "layerUrl": {
-          "type": "string",
-          "default": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        },
-        "layerOptions": {
-          "type": "object",
-          "properties": {
-            "attribution": {
-              "type": "string",
-              "default": "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"
-            }
-          },
-          "default": {
-            "attribution": "&copy; <a href=\"https://www.openstreetmap.org\">OpenStreetMap</a> contributors"
-          }
-        }
-      }
+  "type": "object",
+  "properties": {
+    "mapElementView": {
+      "$ref": "#/$defs/MapElementView"
     },
-    "MapElementViewState": {
+    "mapElementMarkers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/MapElementMarker"
+      },
+      "default": []
+    }
+  },
+  "required": [
+    "mapElementView",
+    "mapElementMarkers"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "MapElementView": {
       "type": "object",
       "properties": {
         "center": {
@@ -43,7 +40,7 @@
       ],
       "additionalProperties": false
     },
-    "MapElementMarkerState": {
+    "MapElementMarker": {
       "type": "object",
       "properties": {
         "geoLocationLink": {
@@ -60,32 +57,6 @@
       ],
       "additionalProperties": false
     },
-    "FluxEcoUiMapElementState": {
-      "type": "object",
-      "properties": {
-        "mapElementViewState": {
-          "$ref": "#/$defs/MapElementViewState"
-        },
-        "mapElementLayerStates": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/MapElementLayerState"
-          }
-        },
-        "mapElementMarkerStates": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/MapElementMarkerState"
-          }
-        }
-      },
-      "required": [
-        "mapElementViewState",
-        "mapElementLayerStates",
-        "mapElementMarkerStates"
-      ],
-      "additionalProperties": false
-    },
     "LatLng": {
       "type": "object",
       "properties": {
@@ -98,32 +69,6 @@
           "default": -118.433449
         }
       }
-    },
-    "type": "object",
-    "properties": {
-      "mapElementViewState": {
-        "$ref": "#/$defs/MapElementViewState"
-      },
-      "mapElementLayerStates": {
-        "type": "array",
-        "items": {
-          "$ref": "#/$defs/MapElementLayerState"
-        },
-        "default": []
-      },
-      "mapElementMarkerState": {
-        "type": "array",
-        "items": {
-          "$ref": "#/$defs/MapElementMarkerState"
-        },
-        "default": []
-      }
-    },
-    "required": [
-      "mapElementViewState",
-      "mapElementLayerStates",
-      "mapElementMarkerState"
-    ],
-    "additionalProperties": false
+    }
   }
 }

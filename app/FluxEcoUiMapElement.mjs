@@ -2,17 +2,17 @@ import * as L from './libs/leaflet/dist/leaflet-src.esm.js';
 
 export class FluxEcoUiMapElement extends HTMLElement {
     /**
-     * @type {string}
+     * @type {string|null}
      */
-    #id;
-    /**
-     * @type {FluxEcoUiMapElementState|null}
-     */
-    #state = null;
+    #id = null;
     /**
      * @type {FluxEcoUiMapElementSettings}
      */
     #settings;
+    /**
+     * @type {FluxEcoUiMapElementState|null}
+     */
+    #state;
     /**
      * @type {HTMLElement}
      */
@@ -22,194 +22,144 @@ export class FluxEcoUiMapElement extends HTMLElement {
      */
     #shadow;
 
-    static get AttributeName() {
-        return {
-            MapView: 'map-view',
-            MapMarkers: 'map-markers',
-            MapLayers: 'map-layers',
-        };
-    }
-
-    static get AttributeNames() {
-        return Object.values(this.AttributeName);
-    }
 
     static get observedAttributes() {
-        return this.AttributeNames;
+        return ["state"];
     }
 
-
     /**
-     * @param {string} id
-     * @param {FluxEcoUiMapElementConfigs} configs
+     * @param {FluxEcoUiMapElementConfig} validatedConfig
      */
-    constructor(id, configs) {
+    constructor(validatedConfig) {
         super();
-        this.setAttribute("id", id);
-        this.#id = id;
-        this.#settings = configs.settings;
-        this.#state = configs.initialState;
+
+        if (validatedConfig.hasOwnProperty("id")) {
+            this.#id = validatedConfig.id;
+        }
+        this.#settings = validatedConfig.settings;
+        if (validatedConfig.hasOwnProperty("initialState")) {
+            this.#state = validatedConfig.initialState;
+        }
 
         this.#shadow = this.attachShadow({mode: 'closed'});
+        this.#shadow.appendChild(FluxEcoUiMapElement.linkStyleSheet);
+    }
 
+    static get linkStyleSheet() {
         const link = document.createElement("link");
         link.rel = "stylesheet";
         link.href = "./flux-eco-ui-map-element/assets/stylesheet.css";
-        this.#shadow.appendChild(link);
+        return link;
+    }
 
-        this.#contentContainer = this.#createContentContainerElement(id)
-        this.#shadow.appendChild(this.#contentContainer);
+    static get tagName() {
+        return 'flux-eco-ui-map-element'
     }
 
     /**
-     * @param {string} id
-     * @param {FluxEcoUiMapElementConfigs} configs
+     * @param {FluxEcoUiMapElementConfig} validatedConfig
      * @returns {FluxEcoUiMapElement}
      */
-    static new(id, configs) {
-        return new FluxEcoUiMapElement(id, configs);
+    static new(validatedConfig) {
+        return new FluxEcoUiMapElement(validatedConfig);
     }
 
     connectedCallback() {
+        if (this.#id === null) {
+            this.#id = [this.parentElement.id, FluxEcoUiMapElement.tagName].join("/");
+        }
+        this.setAttribute("id", this.#id);
+
+        this.#contentContainer = this.#createContentContainerElement(this.#id)
+        this.#shadow.appendChild(this.#contentContainer);
+
         if (this.#state) {
             this.#applyStateChanged(this.#state)
         }
     }
 
-
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case FluxEcoUiMapElement.AttributeName.MapView:
-                this.changeMapView(JSON.parse(newValue));
-                break;
-            case FluxEcoUiMapElement.AttributeName.MapLayers:
-                this.changeMapLayers(JSON.parse(newValue));
-                break;
-            case FluxEcoUiMapElement.AttributeName.MapMarkers:
-                this.changeMapMarkers(JSON.parse(newValue));
+            case "state":
+                this.changeState(JSON.parse(newValue));
                 break;
             default:
                 break;
         }
     }
 
-    /**
-     * @param {FluxEcoUiMapElementState} newState
-     * @return {void}
-     */
     changeState(newState) {
-        this.#applyStateChanged(newState)
+        //todo validate
+
+        this.#applyStateChanged(newState);
     }
 
-    /**
-     * @param {MapElementViewState} newMapViewState
-     * @return {void}
-     */
-    changeMapView(newMapViewState) {
-        if (this.#state) {
-            const newState = this.#state
-            newState.mapView = newMapViewState;
-            this.#applyStateChanged(newState)
-        }
-    }
+    #applyStateChanged(validatedState) {
+        const {mapContainerDimensions, mapElementLayers} = this.#settings;
+        const {mapElementView, mapElementMarkers} = validatedState
 
-    /**
-     * @param {MapElementLayerState[]} newMapLayersState
-     * @return {void}
-     */
-    changeMapLayers(newMapLayersState) {
-        if (this.#state) {
-            const newState = this.#state
-            newState.mapLayers = newMapLayersState;
-            this.#applyStateChanged(newState)
-        }
-    }
-
-    /**
-     * @param {MapElementMarkerState[]} newMapMarkersState
-     * @return {void}
-     */
-    changeMapMarkers(newMapMarkersState) {
-        if (this.#state) {
-            const newState = this.#state
-            newState.mapMarkers = newMapMarkersState;
-            this.#applyStateChanged(newState)
-        }
-    }
-
-    #applyStateChanged(newState) {
-        const mapContainerElement = this.#createMapContainerElement(this.#settings.mapContainerDimensions);
+        const mapContainer = this.#createMapContainerElement(mapContainerDimensions);
         this.#contentContainer.innerHTML = "";
-        this.#contentContainer.appendChild(mapContainerElement);
-        this.#renderMap(mapContainerElement, newState);
-        this.#state = newState;
-    }
+        this.#contentContainer.appendChild(mapContainer);
 
+        const map = L.map(mapContainer);
+        this.#renderMapLayers(map, mapElementLayers);
+        this.#renderMapView(map, mapElementView)
+        this.#renderMapMarkers(map, mapElementMarkers)
 
-    /**
-     * @param {HTMLElement} mapContainer
-     * @param {FluxEcoUiMapElementState} elementState
-     */
-    #renderMap(mapContainer, elementState) {
-        const {mapView, mapLayers, mapMarkers} = elementState
-
-        const map = L.map(mapContainer)
-        this.#renderMapView(map, mapView)
-        if (mapLayers.length > 0) {
-            this.#renderMapLayers(map, mapLayers);
-        }
-        if (mapMarkers.length > 0) {
-            this.#renderMapMarkers(map, mapMarkers);
+        this.#state = validatedState;
+        const stateStringified = JSON.stringify(this.#state)
+        if (this.getAttribute("state") !== stateStringified) {
+            this.setAttribute("state", stateStringified);
         }
     }
 
     /**
-     *
-     * @param parentMapElement
-     * @param {MapElementViewState} mapView
+     * @param map
+     * @param {MapElementView} mapView
      */
-    #renderMapView(parentMapElement, mapView) {
-        parentMapElement.setView([mapView.center.lat, mapView.center.lng], mapView.zoom);
+    #renderMapView(map, mapView) {
+        map.setView([mapView.center.lat, mapView.center.lng], mapView.zoom);
     }
 
 
     /**
-     * @param parentMapElement
-     * @param {MapElementMarkerState[]} mapLayers
+     * @param map
+     * @param {MapElementLayer[]} mapLayers
      */
-    #renderMapLayers(parentMapElement, mapLayers) {
+    #renderMapLayers(map, mapLayers) {
         mapLayers.forEach((mapLayer) => {
-            this.#renderMapLayer(parentMapElement, mapLayer)
+            this.#renderMapLayer(map, mapLayer)
         });
     }
 
     /**
      *
-     * @param parentMapElement
-     * @param {MapElementLayerState} mapLayer
+     * @param map
+     * @param {MapElementLayer} mapLayer
      */
-    #renderMapLayer(parentMapElement, mapLayer) {
-        L.tileLayer(mapLayer.layerUrl, mapLayer.layerOptions).addTo(parentMapElement)
+    #renderMapLayer(map, mapLayer) {
+        L.tileLayer(mapLayer.layerUrl, mapLayer.layerOptions).addTo(map)
     }
 
     /**
      *
-     * @param parentMapElement
-     * @param {MapElementMarkerState[]} mapMarkers
+     * @param map
+     * @param {MapElementMarker[]} mapMarkers
      */
-    #renderMapMarkers(parentMapElement, mapMarkers) {
+    #renderMapMarkers(map, mapMarkers) {
         mapMarkers.forEach((mapMarker) => {
-            this.#renderMapLayer(parentMapElement, mapMarker)
+            this.#renderMapLayer(map, mapMarker)
         });
     }
 
     /**
      *
-     * @param parentMapElement
-     * @param {MapElementMarkerState} mapMarker
+     * @param map
+     * @param {MapElementMarker} mapMarker
      */
-    #renderMapMarker(parentMapElement, mapMarker) {
-        L.marker([mapMarker.lat, mapMarker.lng]).addTo(parentMapElement)
+    #renderMapMarker(map, mapMarker) {
+        L.marker([mapMarker.lat, mapMarker.lng]).addTo(map)
         /* todo
                    L.marker([link.lat, link.lng]).addTo(map)
                    .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
@@ -241,4 +191,4 @@ export class FluxEcoUiMapElement extends HTMLElement {
 
 }
 
-customElements.define('flux-eco-ui-map-element', FluxEcoUiMapElement);
+customElements.define(FluxEcoUiMapElement.tagName, FluxEcoUiMapElement);
