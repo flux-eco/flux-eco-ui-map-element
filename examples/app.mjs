@@ -4,7 +4,6 @@ import {FluxEcoNodeHttpServer} from "../../flux-eco-node-http-server/app/server/
 
 async function app() {
 
-
     const httpServerConfig = /** @type FluxEcoHttpServerConfig */ {
         server: {
             port: '8500',
@@ -23,6 +22,9 @@ async function app() {
                     "/main.mjs": {
                         "contentType": "application/javascript"
                     },
+                    "/**/*.css": {
+                        "contentType": "text/css"
+                    },
                     "/**/*.mjs": {
                         "contentType": "application/javascript"
                     },
@@ -32,42 +34,7 @@ async function app() {
                     "/settings.json": {
                         "contentType": "application/json"
                     },
-                },
-                "/public/flux-eco-ui-map-element": {
-                    "/**/*.mjs": {
-                        "contentType": "application/javascript"
-                    },
-                },
-                "/public/flux-eco-ui-map-element/definitions": {
-                    "/types.mjs": {
-                        "contentType": "application/javascript"
-                    },
-                    "/**/*.css": {
-                        "contentType": "text/css"
-                    },
-                },
-                "/public/flux-eco-ui-map-element/assets": {
-                    "/**/*.css": {
-                        "contentType": "text/css"
-                    },
-                },
-                "/public/flux-eco-ui-map-element/libs": {
-                    "/**/*.js": {
-                        "contentType": "application/javascript"
-                    },
-                    "/**/*.png": {
-                        "contentType": "image/png"
-                    },
-                    "/**/*.css": {
-                        "contentType": "text/css"
-                    },
-                    "/**/*.map": {
-                        "contentType":  "application/javascript"
-                    },
-                    "/**/*.mjs": {
-                        "contentType": "application/javascript"
-                    },
-                },
+                }
             },
             api: {}
         }

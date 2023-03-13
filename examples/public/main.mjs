@@ -8,11 +8,11 @@ const id = "some/id-path";
 
 const state =  /** @type {FluxEcoUiMapElementState} */  ({
     mapElementView: {
-        center: {
-            lat: 10.238972,
-            lng: -23.433449
+        "center": {
+            "lat": 10.238972,
+            "lng": -23.433449
         },
-        zoom: 13
+        "zoom": 13
     },
     mapElementMarkers: []
 })
