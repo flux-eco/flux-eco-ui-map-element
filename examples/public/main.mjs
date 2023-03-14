@@ -38,4 +38,4 @@ setTimeout(function () {
         "state", JSON.stringify(newState)
     )
     rerender();
-}, 10000); // 20000 Millisekunden entsprechen 10 Sekunden
+}, 10000);
