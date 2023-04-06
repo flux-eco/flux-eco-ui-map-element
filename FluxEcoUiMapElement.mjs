@@ -1,4 +1,4 @@
-import * as L from './libs/leaflet/dist/leaflet-src.esm.js';
+import * as L from  "https://unpkg.com/leaflet/dist/leaflet-src.esm.js"; //todo
 
 export class FluxEcoUiMapElement extends HTMLElement {
     /**

@@ -1,4 +1,4 @@
-import {FluxEcoUiMapElement} from "./flux-eco-ui-map-element/FluxEcoUiMapElement.mjs";
+import {FluxEcoUiMapElement} from "../../FluxEcoUiMapElement.mjs";
 
 const parentElement = document.createElement("div");
 document.body.appendChild(parentElement);
